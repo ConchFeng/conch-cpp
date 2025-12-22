@@ -5,6 +5,7 @@
 add_subdirectory(desktop_pro)
 add_subdirectory(snake_cli)   # CLI Snake game
 add_subdirectory(snake_qt)    # Qt Snake game
+add_subdirectory(chat_client) # Chat client
 add_subdirectory(ios_native)
 
 # Android app requires Android NDK
