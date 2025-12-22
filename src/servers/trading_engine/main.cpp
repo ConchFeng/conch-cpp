@@ -3,6 +3,6 @@
 
 int main() {
     spdlog::info("Starting Trading Engine...");
-    fmt::print("Trading Engine initialized.\\n");
+    fmt::print("Trading Engine initialized.\n");
     return 0;
 }

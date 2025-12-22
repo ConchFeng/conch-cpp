@@ -3,6 +3,6 @@
 
 int main() {
     spdlog::info("Starting Meeting Gateway...");
-    fmt::print("Meeting Gateway initialized.\\n");
+    fmt::print("Meeting Gateway initialized.\n");
     return 0;
 }
