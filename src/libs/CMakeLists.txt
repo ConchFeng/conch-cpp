@@ -1,0 +1,5 @@
+add_subdirectory(foundation)
+add_subdirectory(network)
+add_subdirectory(quant_core)
+add_subdirectory(media_core)
+add_subdirectory(ui_kit)

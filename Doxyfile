@@ -1,0 +1,60 @@
+# Doxyfile - Doxygen configuration for Conch Cross-Platform
+
+#---------------------------------------------------------------------------
+# Project configuration
+#---------------------------------------------------------------------------
+PROJECT_NAME           = "Conch Cross-Platform"
+PROJECT_NUMBER         = "1.0.0"
+PROJECT_BRIEF          = "Modern C++ Cross-Platform Framework for HFT and RTC"
+OUTPUT_DIRECTORY       = docs
+CREATE_SUBDIRS         = NO
+
+#---------------------------------------------------------------------------
+# Build configuration
+#---------------------------------------------------------------------------
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+RECURSIVE              = YES
+
+#---------------------------------------------------------------------------
+# Input configuration
+#---------------------------------------------------------------------------
+INPUT                  = src/libs src/servers src/apps README.rst
+FILE_PATTERNS          = *.cpp *.h *.hpp *.md *.rst
+EXCLUDE_PATTERNS       = */build/* */build_*/* */.conan/* */CMakeFiles/*
+
+#---------------------------------------------------------------------------
+# Output formats
+#---------------------------------------------------------------------------
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+HTML_OUTPUT            = html
+HTML_COLORSTYLE_HUE    = 220
+HTML_COLORSTYLE_SAT    = 100
+HTML_COLORSTYLE_GAMMA  = 80
+
+#---------------------------------------------------------------------------
+# Preprocessor
+#---------------------------------------------------------------------------
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = NO
+
+#---------------------------------------------------------------------------
+# Diagrams
+#---------------------------------------------------------------------------
+HAVE_DOT               = YES
+DOT_NUM_THREADS        = 4
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+CLASS_DIAGRAMS         = YES
+UML_LOOK               = YES
+
+#---------------------------------------------------------------------------
+# Other options
+#---------------------------------------------------------------------------
+QUIET                  = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES

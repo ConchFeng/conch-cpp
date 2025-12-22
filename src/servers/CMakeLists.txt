@@ -1,0 +1,2 @@
+add_subdirectory(trading_engine)
+add_subdirectory(meeting_gateway)

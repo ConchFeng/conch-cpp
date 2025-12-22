@@ -1,0 +1,79 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  CONAN_USER_HOME: "$CI_PROJECT_DIR/.conan"
+
+cache:
+  paths:
+    - .conan/
+    - build/
+
+build:linux:
+  stage: build
+  image: ubuntu:22.04
+  before_script:
+    - apt-get update && apt-get install -y build-essential cmake python3-pip
+    - pip3 install conan
+  script:
+    - chmod +x build.sh
+    - ./build.sh
+  artifacts:
+    paths:
+      - build/bin/
+    expire_in: 1 week
+
+build:docker:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t conch-cpp:$CI_COMMIT_SHA .
+    - docker tag conch-cpp:$CI_COMMIT_SHA conch-cpp:latest
+
+test:unit:
+  stage: test
+  image: ubuntu:22.04
+  dependencies:
+    - build:linux
+  before_script:
+    - apt-get update && apt-get install -y build-essential cmake python3-pip
+  script:
+    - chmod +x scripts/run_tests.sh
+    - ./scripts/run_tests.sh
+  artifacts:
+    reports:
+      junit: build/test-results/*.xml
+
+test:coverage:
+  stage: test
+  image: ubuntu:22.04
+  dependencies:
+    - build:linux
+  before_script:
+    - apt-get update && apt-get install -y build-essential cmake python3-pip lcov
+  script:
+    - chmod +x scripts/run_tests.sh
+    - ./scripts/run_tests.sh --coverage
+  coverage: '/lines[\.]*: (\d+\.\d+)%/'
+  artifacts:
+    paths:
+      - build/coverage/
+
+deploy:staging:
+  stage: deploy
+  only:
+    - develop
+  script:
+    - docker-compose up -d
+
+deploy:production:
+  stage: deploy
+  only:
+    - main
+  when: manual
+  script:
+    - docker-compose -f docker-compose.prod.yml up -d

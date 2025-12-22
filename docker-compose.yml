@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  trading_engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: conch-cpp:latest
+    container_name: trading_engine
+    command: trading_engine
+    restart: unless-stopped
+    networks:
+      - conch_network
+    ports:
+      - "8080:8080"
+    environment:
+      - LOG_LEVEL=info
+    volumes:
+      - ./logs:/var/log/conch
+
+  meeting_gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: conch-cpp:latest
+    container_name: meeting_gateway
+    command: meeting_gateway
+    restart: unless-stopped
+    networks:
+      - conch_network
+    ports:
+      - "8081:8081"
+    environment:
+      - LOG_LEVEL=info
+    volumes:
+      - ./logs:/var/log/conch
+
+networks:
+  conch_network:
+    driver: bridge
+
+volumes:
+  logs:
