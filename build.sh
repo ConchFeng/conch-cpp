@@ -17,6 +17,12 @@ cd build
 # The --force flag ensures it overwrites any existing profile to avoid errors.
 conan profile detect --force
 
+# [MacOS] Suppress 'unguarded-availability' errors triggered by recent SDK updates.
+if [ "$RUNNER_OS" == "macOS" ]; then
+  echo 'tools.build:cflags=["-Wno-error=unguarded-availability-new"]' >> ~/.conan2/profiles/default
+  echo 'tools.build:cxxflags=["-Wno-error=unguarded-availability-new"]' >> ~/.conan2/profiles/default
+fi
+
 # Install dependencies with Conan
 echo "📦 Installing dependencies with Conan..."
 conan install .. \
