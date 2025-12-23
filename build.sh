@@ -19,7 +19,10 @@ conan profile detect --force
 
 # Install dependencies with Conan
 echo "📦 Installing dependencies with Conan..."
-conan install .. --build=missing
+conan install .. \
+  --build=missing \
+  -c tools.system.package_manager:mode=install \
+  -c tools.system.package_manager:sudo=True
 
 # Configure CMake with Conan toolchain
 echo "🔧 Configuring CMake..."
