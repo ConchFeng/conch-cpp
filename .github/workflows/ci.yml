@@ -1,134 +1,67 @@
-name: CI/CD Pipeline
+@echo off
+setlocal enabledelayedexpansion
 
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+echo ========================================
+echo Conch Cross-Platform - VS2022 Build
+echo ========================================
 
-jobs:
-  build-and-test:
-    name: ${{ matrix.os }} - ${{ matrix.build_type }}
-    runs-on: ${{ matrix.os }}
-    
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        build_type: [Release, Debug]
-        include:
-          - os: ubuntu-latest
-            conan_profile: linux
-          - os: macos-latest
-            conan_profile: macos
-          - os: windows-latest
-            conan_profile: windows
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Install Conan
-      run: |
-        pip install conan
-        conan --version
-    
-    - name: Cache Conan packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.conan2
-        key: ${{ runner.os }}-conan-${{ hashFiles('**/conanfile.py') }}
-        restore-keys: |
-          ${{ runner.os }}-conan-
-    
-    - name: Install dependencies (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake ninja-build libgl1-mesa-dev pkg-config
-    
-    - name: Build (Unix)
-      if: runner.os != 'Windows'
-      run: |
-        chmod +x build.sh
-        ./build.sh
-    
-    - name: Build (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        scripts\build_vs2022.bat
-    
-    - name: Run tests
-      run: |
-        chmod +x scripts/run_tests.sh || true
-        ./scripts/run_tests.sh || scripts\run_tests.bat
-    
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results-${{ matrix.os }}-${{ matrix.build_type }}
-        path: build/test-results/
-    
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: binaries-${{ matrix.os }}-${{ matrix.build_type }}
-        path: build/bin/
-  
-  docker-build:
-    name: Docker Build
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    
-    - name: Build Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        push: false
-        tags: conch-cpp:latest
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-  
-  code-quality:
-    name: Code Quality & Coverage
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Install dependencies
-      run: |
-        pip install conan
-        sudo apt-get update
-        sudo apt-get install -y cmake lcov
-    
-    - name: Build with coverage
-      run: |
-        chmod +x build.sh scripts/run_tests.sh
-        ./build.sh
-        ./scripts/run_tests.sh --coverage
-    
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        files: ./build/coverage/coverage.info
-        fail_ci_if_error: true
+:: 1. Create build directory
+if not exist "build_vs2022" (
+    echo [INFO] Creating build directory 'build_vs2022'...
+    mkdir build_vs2022
+)
+cd build_vs2022
+
+:: 2. Auto-detect system environment
+echo [1/5] Detecting Conan profile...
+conan profile detect --force
+if %errorlevel% neq 0 (
+    echo [ERROR] Failed to detect Conan profile.
+    exit /b %errorlevel%
+)
+
+:: 3. Install Conan dependencies
+:: 🟢 FIX: Set C++ Standard to 23 (Cutting edge!)
+echo [2/5] Installing Conan dependencies...
+conan install .. ^
+  --build=missing ^
+  --settings=build_type=Release ^
+  --settings=compiler.cppstd=23 ^
+  -c tools.system.package_manager:mode=install
+if %errorlevel% neq 0 (
+    echo [ERROR] Conan install failed. Exiting.
+    exit /b %errorlevel%
+)
+
+:: 4. Generate Visual Studio 2022 Solution
+:: 🟢 FIX: Ensure CMake also knows we are using C++23
+echo [3/5] Generating Visual Studio 2022 solution...
+cmake .. -G "Visual Studio 17 2022" -A x64 ^
+  -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake ^
+  -DCMAKE_POLICY_DEFAULT_CMP0091=NEW ^
+  -DCMAKE_CXX_STANDARD=23 ^
+  -DCMAKE_BUILD_TYPE=Release
+if %errorlevel% neq 0 (
+    echo [ERROR] CMake configuration failed. Exiting.
+    exit /b %errorlevel%
+)
+
+:: 5. Build the project
+echo [4/5] Building project (Release)...
+cmake --build . --config Release --parallel
+if %errorlevel% neq 0 (
+    echo [ERROR] Build failed. Exiting.
+    exit /b %errorlevel%
+)
+
+echo.
+echo [5/5] Build complete!
+echo.
+echo Solution file: %CD%\ConchCrossPlatform.sln
+echo Binaries:      %CD%\bin\Release\
+echo.
+echo To open in Visual Studio 2022:
+echo    start build_vs2022\ConchCrossPlatform.sln
+echo.
+
+endlocal
