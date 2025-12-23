@@ -81,18 +81,24 @@ All built, all tested, all running.
 Pre-Built Applications
 -----------------------
 
-=========== ================================= ==============
-Category    Application                       Technology
-=========== ================================= ==============
-**Games**   Snake Game (CLI)                  Terminal UI
-**Games**   Snake Game (Qt)                   Qt6 Widgets
-**Finance** Stock Trading Simulator           Portfolio Mgmt
-**Network** Chat Server                       libuv TCP
-**Network** Chat Client                       Async I/O
-**HFT**     Trading Engine                    High-Perf
-**RTC**     Meeting Gateway                   WebRTC Ready
-**Desktop** Pro Desktop App                   Qt6 Cross-Platform
-=========== ================================= ==============
+=========== ================================= ============== ===================
+Category    Application                       Technology     Platforms
+=========== ================================= ============== ===================
+**Games**   Snake Game (CLI)                  Terminal UI    macOS, Linux
+**Games**   Snake Game (Qt)                   Qt6 Widgets    Win, macOS, Linux
+**Finance** Stock Trading Simulator           Portfolio Mgmt Win, macOS, Linux
+**Network** Chat Server                       libuv TCP      Win, macOS, Linux
+**Network** Chat Client                       Async I/O      Win, macOS, Linux
+**HFT**     Trading Engine                    High-Perf      Win, macOS, Linux
+**RTC**     Meeting Gateway                   WebRTC Ready   Win, macOS, Linux
+**Desktop** Pro Desktop App                   Qt6 Cross-Plat Win, macOS, Linux
+**Mobile**  iOS Native App                    UIKit          iOS only
+**Mobile**  Android Native App                JNI            Android only
+=========== ================================= ============== ===================
+
+.. note::
+   **Snake CLI** requires Unix terminal APIs and is not available on Windows. 
+   Windows users can use **Snake Qt** instead for a graphical experience.
 
 Foundation Libraries
 --------------------
