@@ -13,6 +13,10 @@ fi
 
 cd build
 
+# Auto-detect system settings (OS, compiler) and generate a default profile.
+# The --force flag ensures it overwrites any existing profile to avoid errors.
+conan profile detect --force
+
 # Install dependencies with Conan
 echo "📦 Installing dependencies with Conan..."
 conan install .. --build=missing
