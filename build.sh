@@ -17,10 +17,13 @@ cd build
 # The --force flag ensures it overwrites any existing profile to avoid errors.
 conan profile detect --force
 
+CONAN_ARGS=""
+
 # [MacOS] Suppress 'unguarded-availability' errors triggered by recent SDK updates.
-if [ "$RUNNER_OS" == "macOS" ]; then
-  echo 'tools.build:cflags=["-Wno-error=unguarded-availability-new"]' >> ~/.conan2/profiles/default
-  echo 'tools.build:cxxflags=["-Wno-error=unguarded-availability-new"]' >> ~/.conan2/profiles/default
+if [[ "$(uname)" == "Darwin" ]]; then
+    echo "macOS detected - Applying Xcode 16.4+ compatibility fix..."
+    CONAN_ARGS="$CONAN_ARGS -c tools.build:cflags+=[\"-Wno-error=unguarded-availability-new\"]"
+    CONAN_ARGS="$CONAN_ARGS -c tools.build:cxxflags+=[\"-Wno-error=unguarded-availability-new\"]"
 fi
 
 # Install dependencies with Conan
@@ -28,7 +31,8 @@ echo "📦 Installing dependencies with Conan..."
 conan install .. \
   --build=missing \
   -c tools.system.package_manager:mode=install \
-  -c tools.system.package_manager:sudo=True
+  -c tools.system.package_manager:sudo=True \
+  $CONAN_ARGS
 
 # Configure CMake with Conan toolchain
 echo "🔧 Configuring CMake..."
