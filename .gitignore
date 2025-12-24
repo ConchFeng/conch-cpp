@@ -54,3 +54,5 @@ build/coverage/
 # Logs
 logs/
 *.log
+
+.vscode/*
