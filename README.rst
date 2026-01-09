@@ -134,9 +134,48 @@ The framework's modular architecture and standardized structure make it the perf
 - ✅ Stock trading simulator
 - ✅ Multi-client chat system
 - ✅ Snake game (CLI + Qt GUI)
+- ✅ Mario platformer game (Qt)
+- ✅ Breakout arcade game (Qt + OpenGL)
 - ✅ Unit tests + benchmarks
 
 All built, all tested, all running.
+
+🎮 See It In Action
+===================
+
+**Experience the power of cross-platform Qt development with our demo games:**
+
+Mario Qt - Classic Platformer
+------------------------------
+
+.. image:: docs/images/mario_qt_screenshot.png
+   :alt: Mario Qt Game Screenshot
+   :width: 600px
+   :align: center
+
+A full-featured 2D platformer built with Qt6 and modern C++, featuring:
+
+✨ **Physics engine** with realistic jumping and collision detection  
+✨ **Level system** with procedurally loaded platforms and obstacles  
+✨ **Retro pixel art** rendering with smooth animations  
+✨ **Score tracking** and lives system  
+
+Breakout Qt - Modern Arcade Game
+---------------------------------
+
+.. image:: docs/images/breakout_qt_screenshot.png
+   :alt: Breakout Qt Game Screenshot
+   :width: 600px
+   :align: center
+
+A gorgeous OpenGL-powered brick-breaking game showcasing advanced graphics:
+
+✨ **OpenGL rendering** with hardware acceleration  
+✨ **Particle effects** and motion trails  
+✨ **Rainbow brick patterns** with gradient effects  
+✨ **Progressive difficulty** with multiple levels  
+
+Both games demonstrate the framework's ability to build polished, production-ready applications with minimal code.
 
 📦 What's Included?
 ===================
@@ -149,6 +188,8 @@ Category    Application                       Technology     Platforms
 =========== ================================= ============== ===================
 **Games**   Snake Game (CLI)                  Terminal UI    macOS, Linux
 **Games**   Snake Game (Qt)                   Qt6 Widgets    Win, macOS, Linux
+**Games**   Mario Qt (Platformer)             Qt6 + Physics  Win, macOS, Linux
+**Games**   Breakout Qt (Arcade)              Qt6 + OpenGL   Win, macOS, Linux
 **Finance** Stock Trading Simulator           Portfolio Mgmt Win, macOS, Linux
 **Network** Chat Server                       libuv TCP      Win, macOS, Linux
 **Network** Chat Client                       Async I/O      Win, macOS, Linux
@@ -246,6 +287,18 @@ Clean, modular, scalable:
 
    ./run.sh snake_cli      # Terminal version
    ./run.sh snake_qt       # Qt GUI version
+
+**Play Mario:**
+
+.. code-block:: bash
+
+   ./run.sh mario_qt       # Classic platformer
+
+**Play Breakout:**
+
+.. code-block:: bash
+
+   ./run.sh breakout_qt    # OpenGL arcade game
 
 🛠️ Build Your Own App
 =======================
