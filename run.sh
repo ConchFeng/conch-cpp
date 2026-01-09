@@ -16,10 +16,10 @@ usage() {
     echo "Available executables:"
     for exe in build/bin/*; do
         if [ -f "$exe" ] && [ -x "$exe" ]; then
-            echo "  - $(basename $exe)"
-        elif [ -d "$exe" ] && [[ "$exe" == *.app ]]; then
+            echo "  - $(basename "$exe")"
+        elif [ -d "$exe" ] && [[ "$(basename "$exe")" == *.app ]]; then
             # macOS .app bundle
-            echo "  - $(basename $exe .app)"
+            echo "  - $(basename "$exe" .app)"
         fi
     done
     exit 1

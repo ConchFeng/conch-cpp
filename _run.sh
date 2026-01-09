@@ -15,7 +15,7 @@ _run_sh() {
         if [[ -f "$exe" && -x "$exe" ]]; then
             # Regular executable
             executables+=($(basename "$exe"))
-        elif [[ -d "$exe" && "$exe" == *.app ]]; then
+        elif [[ -d "$exe" && "$(basename "$exe")" == *.app ]]; then
             # macOS .app bundle
             executables+=($(basename "$exe" .app))
         fi
